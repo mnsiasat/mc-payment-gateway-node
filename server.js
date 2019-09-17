@@ -53,6 +53,11 @@ app.get('/', function (request, response, next) {
     response.redirect('/pay');
 });
 
+app.use('/jquery', express.static(__dirname + '/node_modules/jquery/dist/'));
+app.use('/jquery-ui-dist', express.static(__dirname + '/node_modules/jquery-ui-dist/'));
+app.use('/bootstrap', express.static(__dirname + '/node_modules/bootstrap/dist/'));
+
+
 http.createServer(app).listen(app.get('port'), function () {
     console.log('gateway NodeJS sample code running on port', app.get('port'));
     utils.initWebhooksNotificationsFolder();

@@ -1,48 +1,50 @@
-var express = require('express');
-var gatewayService = require('../service/gatewayService');
-var router = express.Router();
-var utils = require('../scripts/util/commonUtils');
-var view_path = '../templates';
-var config = require('../scripts/config/config');
+const express = require('express');
+const gatewayService = require('../service/gatewayService');
+const router = express.Router();
+const utils = require('../scripts/util/commonUtils');
+const view_path = '../templates';
+const config = require('../scripts/config/config');
 /**
 * Display page for Hosted Checkout operation
 *
 * @return response for hostedCheckout.ejs
 */
 router.get('/hostedCheckout', function (request, response, next) {
-    var orderId = utils.keyGen(10);
-    var requestData = {
-        "apiOperation": "CREATE_CHECKOUT_SESSION",
-        "order": {
-            "id": orderId,
-            "currency": utils.getCurrency()
+    const orderId = utils.keyGen(10);
+    const requestData = {
+        apiOperation: "CREATE_CHECKOUT_SESSION",
+        interaction: {
+            operation:config.TEST_GATEWAY.OPERATION
+        },
+        order: {
+            id: orderId,
+            currency: utils.getCurrency()
         }
     }
-    var apiRequest = { orderId: orderId };
-    var requestUrl = gatewayService.getRequestUrl("REST", apiRequest);
+    const apiRequest = { orderId: orderId };
     gatewayService.getSession(requestData, function (result) {
         response.render(view_path + '/hostedCheckout', {
-            "baseUrl": config.TEST_GATEWAY.BASEURL,
-            "apiVersion": config.TEST_GATEWAY.API_VERSION,
-            "orderId": orderId,
-            "merchant": result.merchant,
-            "result": result.result,
-            "session": {
-                "id": result.session.id,
-                "updateStatus": result.session.updateStatus,
-                "version": result.session.version
+            baseUrl: config.TEST_GATEWAY.BASEURL,
+            apiVersion: config.TEST_GATEWAY.API_VERSION,
+            orderId: orderId,
+            merchant: result.merchant,
+            result: result.result,
+            session: {
+                id: result.session.id,
+                updateStatus: result.session.updateStatus,
+                version: result.session.version
             },
-            "successIndicator": result.successIndicator,
-            "returnUrl": '/process/hostedCheckout/'
+            successIndicator: result.successIndicator,
+            returnUrl: '/process/hostedCheckout/'
         });
         next();
     });
 });
 router.get('/hostedCheckout/:orderId/:successIndicator/:sessionId', function (request, response, next) {
-    var sessionIndicator = request.params.successIndicator;
-    var orderId = request.params.orderId;
-    var sessionId = request.params.sessionId;
-    var resdata = {
+    const sessionIndicator = request.params.successIndicator;
+    const orderId = request.params.orderId;
+    const sessionId = request.params.sessionId;
+    const resdata = {
         "orderId": orderId,
         "sessionId": sessionId,
         "baseUrl": config.TEST_GATEWAY.BASEURL,
@@ -68,14 +70,14 @@ router.get('/hostedCheckout/:orderId/:successIndicator/:sessionId', function (re
 * @return for hostedCheckoutReceipt page or error page
 */
 router.get('/hostedCheckout/:orderId/:result', function (request, response, next) {
-    var result = request.params.result;
-    var orderId = request.params.orderId;
+    const result = request.params.result;
+    const orderId = request.params.orderId;
     if (result == "SUCCESS") {
-        var apiRequest = { orderId: orderId };
-        var requestUrl = gatewayService.getRequestUrl("REST", apiRequest);
+        const apiRequest = { orderId: orderId };
+        const requestUrl = gatewayService.getRequestUrl("REST", apiRequest);
         gatewayService.paymentResult(requestUrl, function (error, result) {
             if (error) {
-                var reserror = {
+                const reserror = {
                     error: true,
                     title: "hostedCheckoutReceipt",
                     cause: "Payment was unsuccessful",
@@ -85,7 +87,7 @@ router.get('/hostedCheckout/:orderId/:result', function (request, response, next
                 }
                 response.render(view_path + '/error', reserror);
             } else {
-                var ressuccess = {
+                const ressuccess = {
                     error: false,
                     cause: "Payment was successful",
                     message: "Your transaction was successfully completed",
@@ -95,7 +97,7 @@ router.get('/hostedCheckout/:orderId/:result', function (request, response, next
             }
         });
     } else {
-        var reserror = {
+        const reserror = {
             error: true,
             title: "hostedCheckoutReceipt",
             cause: "Payment was unsuccessful",

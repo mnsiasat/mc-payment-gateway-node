@@ -13,7 +13,8 @@ CONFIG.TEST_GATEWAY = {
     API_VERSION: process.env.API_VERSION,
     USERNAME: 'merchant.' + process.env.USERNAME,
     PASSWORD: process.env.PASSWORD ,
-    MERCHANTID: process.env.USERNAME
+    MERCHANTID: process.env.USERNAME,
+    OPERATION: process.env.INTERACTION_OPERATION
 };
 CONFIG.PKI_GATEWAY = {
     BASEURL: process.env.BASEURL ,
