@@ -59,3 +59,13 @@ typings/
 
 # next.js build output
 .next
+
+# IDEs and editors
+*.idea
+*.project
+*.classpath
+*.iml
+*.c9
+*.launch
+*.settings
+*.sublime-workspace
